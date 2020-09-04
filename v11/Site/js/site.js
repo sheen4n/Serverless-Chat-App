@@ -2,6 +2,8 @@ var ChatApp = window.ChatApp || {};
 
 (function scopeWrapper($) {
 
+    var userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+
     var currentUsername = 'Student';
 
     var lastChat = null;
@@ -107,6 +109,51 @@ var ChatApp = window.ChatApp || {};
             .then(function (result) {
                 window.location = '/chat.html#' + result.data;
             });
+    };
+
+    ChatApp.signup = function () {
+        var username = $('#username').val();
+        var password = $('#password').val();
+        var email = new AmazonCognitoIdentity.CognitoUserAttribute({
+            Name: 'email',
+            Value: $('#email').val()
+        });
+
+        userPool.signUp(username, password, [email], null, function (err, result) {
+            if (err) {
+                alert(err);
+            } else {
+                window.location = '/confirm.html#' + username;
+            }
+        });
+    };
+
+    ChatApp.confirm = function () {
+        var username = location.hash.substring(1);
+        var cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+            Username: username,
+            Pool: userPool
+        });
+        cognitoUser.confirmRegistration($('#code').val(), true, function (err, results) {
+            if (err) {
+                alert(err);
+            } else {
+                window.location = '/';
+            }
+        });
+    };
+
+    ChatApp.resend = function () {
+        var username = location.hash.substring(1);
+        var cognitoUser = new AmazonCognitoIdentity.CognitoUser({
+            Username: username,
+            Pool: userPool
+        });
+        cognitoUser.resendConfirmationCode(function (err) {
+            if (err) {
+                alert(err);
+            }
+        })
     };
 
 }(jQuery));

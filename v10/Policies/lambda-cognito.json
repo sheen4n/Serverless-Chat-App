@@ -5,7 +5,7 @@
       "Sid": "VisualEditor0",
       "Effect": "Allow",
       "Action": "cognito-idp:ListUsers",
-      "Resource": "arn:aws:cognito-idp:<your region>:<account id>:userpool/<user pool id>"
+      "Resource": "arn:aws:cognito-idp:ap-southeast-1:037778665457:userpool/ap-southeast-1_0ZqnX5qsY"
     }
   ]
 }
